@@ -32,9 +32,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-
       - name: Runs code style check
         run: composer run-script style:check
-
-      - name: Run test suite
-        run: composer run-script test

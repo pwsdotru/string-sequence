@@ -2,7 +2,6 @@
   "name": "pwsdotru/string-sequence",
   "description": "Library for generate sequence from string description",
   "type": "library",
-  "version": "1.0.0",
   "license": "GPL-3.0-or-later",
   "authors": [
     {

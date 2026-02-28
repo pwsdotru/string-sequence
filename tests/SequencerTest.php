@@ -139,4 +139,42 @@ class SequencerTest extends TestCase
           [0, 0],
         ];
     }
+
+    /**
+     * @dataProvider getAddSet
+     * @param int $length
+     * @param string $input
+     * @param array $expected
+     * @covers \StringSequence\Sequencer::add
+     */
+    public function testAdd(int $length, string $input, array $expected): void
+    {
+        $obj = new Sequencer($length);
+        $obj->add($input);
+        $result = $obj->get();
+        self::assertIsArray($result);
+        self::assertEquals($length, count($result));
+        self::assertSame($expected, $result);
+    }
+
+    public static function getAddSet(): array
+    {
+        return [
+          [
+              3,
+              "1",
+              [1 => true, 2 => false, 3 => false]
+          ],
+          [
+              4,
+              "2,4",
+              [1 => false, 2 => true, 3 => false, 4 => true]
+          ],
+          [
+                5,
+                "2,-1, 4",
+                [1 => false, 2 => true, 3 => false, 4 => true, 5 => true]
+          ],
+        ];
+    }
 }

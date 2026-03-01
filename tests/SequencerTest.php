@@ -177,4 +177,12 @@ class SequencerTest extends TestCase
           ],
         ];
     }
+
+    public function testAddOutOfBoundsException(): void
+    {
+        $this->expectException("StringSequence\Exception\OutOfBoundsException");
+        $this->expectExceptionMessage("Out of bound for index: 11. Index should be in range from 1 to 2");
+        $obj = new Sequencer(2);
+        $obj->add("11");
+    }
 }

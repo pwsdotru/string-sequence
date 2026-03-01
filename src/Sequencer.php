@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace StringSequence;
 
+use StringSequence\Exception\OutOfBoundsException;
+
+use function sprintf;
+
 class Sequencer
 {
     private $_sequence;
@@ -66,6 +70,7 @@ class Sequencer
             $this->_sequence[$number] = true;
             return;
         }
+        throw new OutOfBoundsException(sprintf("Out of bound for index: %d. Index should be in range from 1 to %d", $number, $this->_length));
     }
 
     private function isIntNumeric(string $input): bool

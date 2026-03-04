@@ -141,6 +141,33 @@ class SequencerTest extends TestCase
     }
 
     /**
+     * @dataProvider getIsPeriodSet
+     * @param string $input
+     * @param bool $expected
+     * @covers \StringSequence\Sequencer::isPeriod
+     */
+    public function testIsPeriod(string $input, bool $expected): void
+    {
+        $obj = new Sequencer(10);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('isPeriod');
+        $method->setAccessible(true);
+        $result = $method->invoke($obj, $input);
+        self::assertSame($expected, $result);
+    }
+
+    public static function getIsPeriodSet(): array
+    {
+        return [
+            ["1-4", true],
+            ["-14--5", true],
+            ["1", false],
+            ["-23", false],
+            ["5-*", true],
+        ];
+    }
+
+    /**
      * @dataProvider getAddSet
      * @param int $length
      * @param string $input

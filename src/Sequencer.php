@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StringSequence;
 
+use StringSequence\Exception\InvalidFormatException;
 use StringSequence\Exception\OutOfBoundsException;
 
 use function sprintf;
@@ -78,11 +79,38 @@ class Sequencer
         return is_numeric($input) && $input === (string)(int)$input;
     }
 
+    private function isPeriod(string $input): bool
+    {
+        return (strpos($input, "-", 1) !== false);
+    }
+
+    private function parsePeriod(string $input): array
+    {
+        $result = ["start" => 1, "end" => $this->_length, "step" => 1];
+        $separator = strpos($input, "-", 1);
+        $start = trim(substr($input, 0, $separator));
+        $end = trim(substr($input, $separator + 1));
+        if ($this->isIntNumeric($start)) {
+            $result["start"] = $this->getPosition((int)$start);
+        } else {
+            throw new InvalidFormatException(sprintf("Invalid format for start of period: %s in %s", $start, $input));
+        }
+        if ($this->isIntNumeric($end)) {
+            $result["end"] = $this->getPosition((int)$end);
+        } else {
+            throw new InvalidFormatException(sprintf("Invalid format for end of period: %s in %s", $start, $input));
+        }
+        return $result;
+    }
+
     private function addToken(string $input): void
     {
         if ($this->isIntNumeric($input)) {
             $this->setSeq($this->getPosition((int)$input));
             return;
+        }
+        if ($this->isPeriod($input)) {
+            $period = $this->parsePeriod($input);
         }
     }
 }

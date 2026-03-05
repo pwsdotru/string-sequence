@@ -84,9 +84,19 @@ class Sequencer
         return (strpos($input, "-", 1) !== false);
     }
 
+    private function isRepeater(string $input): bool
+    {
+        return ($input === "*" || strpos($input, "/", 1) !== false);
+    }
+
+    private function getDefaultPeriod(int $step = 1): array
+    {
+        return  ["start" => 1, "end" => $this->_length, "step" =>  $step];
+    }
+
     private function parsePeriod(string $input): array
     {
-        $result = ["start" => 1, "end" => $this->_length, "step" => 1];
+        $result = $this->getDefaultPeriod();
         $separator = strpos($input, "-", 1);
         $start = trim(substr($input, 0, $separator));
         $end = trim(substr($input, $separator + 1));
@@ -97,10 +107,25 @@ class Sequencer
         }
         if ($this->isIntNumeric($end)) {
             $result["end"] = $this->getPosition((int)$end);
+        } elseif ($this->isRepeater($end)) {
+            $result["step"] = $this->parseRepeater($end);
         } else {
             throw new InvalidFormatException(sprintf("Invalid format for end of period: %s in %s", $start, $input));
         }
         return $result;
+    }
+
+    private function parseRepeater(string $input): int
+    {
+        if ($input === "*") {
+            return 1;
+        }
+        $separator = strpos($input, "/", 1);
+        $repeater = trim(substr($input, $separator + 1));
+        if ($this->isIntNumeric($repeater)) {
+            return (int)$repeater;
+        }
+        throw new InvalidFormatException(sprintf("Invalid format for repeater string: %s in %s", $repeater, $input));
     }
 
     private function addToken(string $input): void
@@ -109,8 +134,14 @@ class Sequencer
             $this->setSeq($this->getPosition((int)$input));
             return;
         }
-        if ($this->isPeriod($input)) {
+
+        $period = null;
+        if ($this->isRepeater($input)) {
+            $period = $this->getDefaultPeriod($this->parseRepeater($input));
+        } elseif ($this->isPeriod($input)) {
             $period = $this->parsePeriod($input);
+        } else {
+            throw new InvalidFormatException("Invalid format for token: %s", $input);
         }
     }
 }

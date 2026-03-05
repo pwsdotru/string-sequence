@@ -168,6 +168,126 @@ class SequencerTest extends TestCase
     }
 
     /**
+     * @covers \StringSequence\Sequencer::getDefaultPeriod
+     */
+    public function testGetDefaultPeriod(): void
+    {
+        $obj = new Sequencer(10);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('getDefaultPeriod');
+        $method->setAccessible(true);
+        $defaultresult = $method->invoke($obj);
+        self::assertSame(["start" => 1, "end" => 10, "step" => 1], $defaultresult);
+        $result = $method->invoke($obj, 4);
+        self::assertSame(["start" => 1, "end" => 10, "step" => 4], $result);
+    }
+
+    /**
+     * @dataProvider getIsRepeaterSet
+     * @param string $input
+     * @param bool $expected
+     * @covers \StringSequence\Sequencer::isRepeater
+     */
+    public function testIsRepeater(string $input, bool $expected): void
+    {
+        $obj = new Sequencer(10);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('isRepeater');
+        $method->setAccessible(true);
+        $result = $method->invoke($obj, $input);
+        self::assertSame($expected, $result);
+    }
+
+    public static function getIsRepeaterSet(): array
+    {
+        return [
+            ["*", true],
+            ["*/2", true],
+            ["34", false],
+            ["5*", false],
+            ["* / 56", true],
+        ];
+    }
+
+    /**
+     * @dataProvider getParseRepeaterSet
+     * @param string $input
+     * @param int $expected
+     * @covers \StringSequence\Sequencer::parseRepeater
+     */
+    public function testParseRepeater(string $input, int $expected): void
+    {
+        $obj = new Sequencer(10);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('parseRepeater');
+        $method->setAccessible(true);
+        $result = $method->invoke($obj, $input);
+        self::assertSame($expected, $result);
+    }
+
+    public static function getParseRepeaterSet(): array
+    {
+        return [
+            ["*", 1],
+            ["*/2", 2],
+            ["* / 56", 56],
+        ];
+    }
+
+    /**
+     * @dataProvider getParsePeriodSet
+     * @param int $length
+     * @param string $input
+     * @param array $expected
+     * @covers \StringSequence\Sequencer::parsePeriod
+     */
+    public function testParsePeriod(int $length, string $input, array $expected): void
+    {
+        $obj = new Sequencer($length);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('parsePeriod');
+        $method->setAccessible(true);
+        $result = $method->invoke($obj, $input);
+        self::assertSame($expected, $result);
+    }
+
+    public static function getParsePeriodSet(): array
+    {
+        return [
+            [
+                10,
+                "1-10",
+                ["start" => 1, "end" => 10, "step" => 1]
+            ],
+            [
+                20,
+                "3-7",
+                ["start" => 3, "end" => 7, "step" => 1]
+            ],
+            [
+                12,
+                "2-*/2",
+                ["start" => 2, "end" => 12, "step" => 2]
+            ],
+            [
+                10,
+                "-4-*",
+                ["start" => 7, "end" => 10, "step" => 1]
+            ],
+            [
+                10,
+                "-4- 9",
+                ["start" => 7, "end" => 9, "step" => 1]
+            ],
+            [
+                10,
+                "-4 - -2",
+                ["start" => 7, "end" => 9, "step" => 1]
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider getAddSet
      * @param int $length
      * @param string $input

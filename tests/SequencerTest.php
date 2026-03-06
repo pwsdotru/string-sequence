@@ -288,6 +288,50 @@ class SequencerTest extends TestCase
     }
 
     /**
+     * @dataProvider getAddPeriodSet
+     * @param int $length
+     * @param string $input
+     * @param array $expected
+     * @covers \StringSequence\Sequencer::addPeriod
+     */
+    public function testAddPeriod(int $length, array $period, array $expected): void
+    {
+        $obj = new Sequencer($length);
+        $reflection = new ReflectionClass($obj);
+        $method = $reflection->getMethod('addPeriod');
+        $method->setAccessible(true);
+        $method->invoke($obj, $period);
+        $result = $obj->get();
+        self::assertSame($expected, $result);
+    }
+
+    public static function getAddPeriodSet(): array
+    {
+        return [
+            [
+                4,
+                ["start" => 1, "end" => 2, "step" => 1],
+                [1 => true, 2 => true, 3 => false, 4 => false]
+            ],
+            [
+                5,
+                ["start" => 2, "end" => 5, "step" => 2],
+                [1 => false, 2 => true, 3 => false, 4 => true, 5 => false]
+            ],
+            [
+                4,
+                ["start" => 1, "end" => 4, "step" => 1],
+                [1 => true, 2 => true, 3 => true, 4 => true]
+            ],
+            [
+                5,
+                ["start" => 2, "end" => 3, "step" => 4],
+                [1 => false, 2 => true, 3 => false, 4 => false, 5 => false]
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider getAddSet
      * @param int $length
      * @param string $input

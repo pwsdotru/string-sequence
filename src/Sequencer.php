@@ -128,6 +128,13 @@ class Sequencer
         throw new InvalidFormatException(sprintf("Invalid format for repeater string: %s in %s", $repeater, $input));
     }
 
+    private function addPeriod(array $period): void
+    {
+        for ($i = $period["start"]; $i <= $period["end"]; $i += $period["step"]) {
+            $this->setSeq($i);
+        }
+    }
+
     private function addToken(string $input): void
     {
         if ($this->isIntNumeric($input)) {
@@ -143,5 +150,6 @@ class Sequencer
         } else {
             throw new InvalidFormatException("Invalid format for token: %s", $input);
         }
+        $this->addPeriod($period);
     }
 }

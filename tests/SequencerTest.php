@@ -28,6 +28,7 @@ class SequencerTest extends TestCase
         $obj = new Sequencer($length);
         $result = $obj->get();
         self::assertIsArray($result);
+        self::assertCount($length, $result);
         self::assertEquals($result, $expected);
     }
 
@@ -344,7 +345,7 @@ class SequencerTest extends TestCase
         $obj->add($input);
         $result = $obj->get();
         self::assertIsArray($result);
-        self::assertEquals($length, count($result));
+        self::assertCount($length, $result);
         self::assertSame($expected, $result);
     }
 
@@ -365,6 +366,21 @@ class SequencerTest extends TestCase
                 5,
                 "2,-1, 4",
                 [1 => false, 2 => true, 3 => false, 4 => true, 5 => true]
+          ],
+          [
+                6,
+                "1, 2-4, 6",
+                [1 => true, 2 => true, 3 => true, 4 => true, 5 => false, 6 => true]
+          ],
+          [
+                6,
+                "3, */2, 5 -6",
+                [1 => true, 2 => false, 3 => true, 4 => false, 5 => true, 6 => true]
+          ],
+          [
+                3,
+                "*",
+                [1 => true, 2 => true, 3 => true]
           ],
         ];
     }

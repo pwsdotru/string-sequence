@@ -150,6 +150,8 @@ class Sequencer
         } else {
             throw new InvalidFormatException("Invalid format for token: %s", $input);
         }
-        $this->addPeriod($period);
+        if (is_array($period)) {
+            $this->addPeriod($period);
+        }
     }
 }

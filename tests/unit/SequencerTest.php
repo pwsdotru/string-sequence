@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace unit;
 
 use StringSequence\Sequencer;
 use ReflectionClass;

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace unit;
 
 use StringSequence\Sequencer;
 use PHPUnit\Framework\TestCase;
 
-class OutOfBoundsExceptionTest extends TestCase
+class InvalidFormatExceptionTest extends TestCase
 {
     public function testContructDefault(): void
     {
-        $this->expectException("StringSequence\Exception\OutOfBoundsException");
+        $this->expectException("StringSequence\Exception\InvalidFormatException");
         $obj = new Sequencer(10);
-        $obj->add("11");
+        $obj->add("*-2");
     }
 }

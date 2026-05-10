@@ -7,29 +7,30 @@ namespace unit;
 use StringSequence\Sequencer;
 use ReflectionClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class SequencerTest extends TestCase
+final class SequencerTest extends TestCase
 {
     public function testContructDefault(): void
     {
         $obj = new Sequencer();
         $result = $obj->get();
-        self::assertIsArray($result);
-        self::assertEmpty($result);
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
     }
 
     /**
-     * @dataProvider constructSet
      * @param int $length
      * @param array $expected
      */
+    #[DataProvider('constructSet')]
     public function testConstruct(int $length, array $expected): void
     {
         $obj = new Sequencer($length);
         $result = $obj->get();
-        self::assertIsArray($result);
-        self::assertCount($length, $result);
-        self::assertEquals($result, $expected);
+        $this->assertIsArray($result);
+        $this->assertCount($length, $result);
+        $this->assertEquals($result, $expected);
     }
 
     public static function constructSet(): array
@@ -47,11 +48,11 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getTokensSet
      * @param string $input
      * @param array $expected
      * @covers \StringSequence\Sequencer::getTokens
      */
+    #[DataProvider('getTokensSet')]
     public function testGetTokens(string $input, array $expected): void
     {
         $obj = new Sequencer();
@@ -59,8 +60,8 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('getTokens');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertIsArray($result);
-        self::assertEquals($expected, $result);
+        $this->assertIsArray($result);
+        $this->assertEquals($expected, $result);
     }
 
     public static function getTokensSet(): array
@@ -86,11 +87,11 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider isIntNumericSet
      * @param string $input
      * @param bool $expected
      * @covers \StringSequence\Sequencer::isIntNumeric
      */
+    #[DataProvider('isIntNumericSet')]
     public function testIsIntNumeric(string $input, bool $expected)
     {
         $obj = new Sequencer();
@@ -98,7 +99,7 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('isIntNumeric');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     public static function isIntNumericSet(): array
@@ -115,11 +116,11 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getPositionSet
      * @param int $input
      * @param int $expected
      * @covers \StringSequence\Sequencer::getPosition
      */
+    #[DataProvider('getPositionSet')]
     public function testGetPosition(int $input, int $expected): void
     {
         $obj = new Sequencer(10);
@@ -127,7 +128,7 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('getPosition');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     public static function getPositionSet(): array
@@ -142,11 +143,11 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getIsPeriodSet
      * @param string $input
      * @param bool $expected
      * @covers \StringSequence\Sequencer::isPeriod
      */
+    #[DataProvider('isPeriodSet')]
     public function testIsPeriod(string $input, bool $expected): void
     {
         $obj = new Sequencer(10);
@@ -154,10 +155,10 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('isPeriod');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getIsPeriodSet(): array
+    public static function isPeriodSet(): array
     {
         return [
             ["1-4", true],
@@ -178,17 +179,17 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('getDefaultPeriod');
         $method->setAccessible(true);
         $defaultresult = $method->invoke($obj);
-        self::assertSame(["start" => 1, "end" => 10, "step" => 1], $defaultresult);
+        $this->assertSame(["start" => 1, "end" => 10, "step" => 1], $defaultresult);
         $result = $method->invoke($obj, 4);
-        self::assertSame(["start" => 1, "end" => 10, "step" => 4], $result);
+        $this->assertSame(["start" => 1, "end" => 10, "step" => 4], $result);
     }
 
     /**
-     * @dataProvider getIsRepeaterSet
      * @param string $input
      * @param bool $expected
      * @covers \StringSequence\Sequencer::isRepeater
      */
+    #[DataProvider('isRepeaterSet')]
     public function testIsRepeater(string $input, bool $expected): void
     {
         $obj = new Sequencer(10);
@@ -196,10 +197,10 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('isRepeater');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getIsRepeaterSet(): array
+    public static function isRepeaterSet(): array
     {
         return [
             ["*", true],
@@ -211,11 +212,11 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getParseRepeaterSet
      * @param string $input
      * @param int $expected
      * @covers \StringSequence\Sequencer::parseRepeater
      */
+    #[DataProvider('parseRepeaterSet')]
     public function testParseRepeater(string $input, int $expected): void
     {
         $obj = new Sequencer(10);
@@ -223,10 +224,10 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('parseRepeater');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getParseRepeaterSet(): array
+    public static function parseRepeaterSet(): array
     {
         return [
             ["*", 1],
@@ -236,12 +237,12 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getParsePeriodSet
      * @param int $length
      * @param string $input
      * @param array $expected
      * @covers \StringSequence\Sequencer::parsePeriod
      */
+    #[DataProvider('parsePeriodSet')]
     public function testParsePeriod(int $length, string $input, array $expected): void
     {
         $obj = new Sequencer($length);
@@ -249,10 +250,10 @@ class SequencerTest extends TestCase
         $method = $reflection->getMethod('parsePeriod');
         $method->setAccessible(true);
         $result = $method->invoke($obj, $input);
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getParsePeriodSet(): array
+    public static function parsePeriodSet(): array
     {
         return [
             [
@@ -289,12 +290,12 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getAddPeriodSet
      * @param int $length
      * @param string $input
      * @param array $expected
      * @covers \StringSequence\Sequencer::addPeriod
      */
+    #[DataProvider('addPeriodSet')]
     public function testAddPeriod(int $length, array $period, array $expected): void
     {
         $obj = new Sequencer($length);
@@ -303,10 +304,10 @@ class SequencerTest extends TestCase
         $method->setAccessible(true);
         $method->invoke($obj, $period);
         $result = $obj->get();
-        self::assertSame($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getAddPeriodSet(): array
+    public static function addPeriodSet(): array
     {
         return [
             [
@@ -333,23 +334,23 @@ class SequencerTest extends TestCase
     }
 
     /**
-     * @dataProvider getAddSet
      * @param int $length
      * @param string $input
      * @param array $expected
      * @covers \StringSequence\Sequencer::add
      */
+    #[DataProvider('addSet')]
     public function testAdd(int $length, string $input, array $expected): void
     {
         $obj = new Sequencer($length);
         $obj->add($input);
         $result = $obj->get();
-        self::assertIsArray($result);
-        self::assertCount($length, $result);
-        self::assertSame($expected, $result);
+        $this->assertIsArray($result);
+        $this->assertCount($length, $result);
+        $this->assertSame($expected, $result);
     }
 
-    public static function getAddSet(): array
+    public static function addSet(): array
     {
         return [
           [

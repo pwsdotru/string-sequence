@@ -8,4 +8,5 @@
 
 ## Versions
 
-1.x.x (branch [php74](https://github.com/pwsdotru/string-sequence/tree/php74)) for PHP 7.4 
+* 1.x.x (branch [php74](https://github.com/pwsdotru/string-sequence/tree/php74)) for PHP 7.4 
+* 2.x.x (branch [master](https://github.com/pwsdotru/string-sequence/)) for PHP 8.3

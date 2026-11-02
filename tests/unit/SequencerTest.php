@@ -15,24 +15,25 @@ final class SequencerTest extends TestCase
     {
         $obj = new Sequencer();
         $result = $obj->get();
-        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
     /**
      * @param int $length
-     * @param array $expected
+     * @param array <int, bool> $expected
      */
     #[DataProvider('constructSet')]
     public function testConstruct(int $length, array $expected): void
     {
         $obj = new Sequencer($length);
         $result = $obj->get();
-        $this->assertIsArray($result);
         $this->assertCount($length, $result);
         $this->assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function constructSet(): array
     {
         return [
@@ -49,7 +50,7 @@ final class SequencerTest extends TestCase
 
     /**
      * @param string $input
-     * @param array $expected
+     * @param array <int, string> $expected
      * @covers \StringSequence\Sequencer::getTokens
      */
     #[DataProvider('getTokensSet')]
@@ -64,6 +65,9 @@ final class SequencerTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function getTokensSet(): array
     {
         return [
@@ -92,7 +96,7 @@ final class SequencerTest extends TestCase
      * @covers \StringSequence\Sequencer::isIntNumeric
      */
     #[DataProvider('isIntNumericSet')]
-    public function testIsIntNumeric(string $input, bool $expected)
+    public function testIsIntNumeric(string $input, bool $expected): void
     {
         $obj = new Sequencer();
         $reflection = new ReflectionClass($obj);
@@ -102,6 +106,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function isIntNumericSet(): array
     {
         return [
@@ -131,6 +138,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function getPositionSet(): array
     {
         return [
@@ -158,6 +168,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function isPeriodSet(): array
     {
         return [
@@ -200,6 +213,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function isRepeaterSet(): array
     {
         return [
@@ -227,6 +243,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function parseRepeaterSet(): array
     {
         return [
@@ -239,7 +258,7 @@ final class SequencerTest extends TestCase
     /**
      * @param int $length
      * @param string $input
-     * @param array $expected
+     * @param array <string, int> $expected
      * @covers \StringSequence\Sequencer::parsePeriod
      */
     #[DataProvider('parsePeriodSet')]
@@ -253,6 +272,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function parsePeriodSet(): array
     {
         return [
@@ -291,8 +313,8 @@ final class SequencerTest extends TestCase
 
     /**
      * @param int $length
-     * @param string $input
-     * @param array $expected
+     * @param array <string, int> $period
+     * @param array <int, bool> $expected
      * @covers \StringSequence\Sequencer::addPeriod
      */
     #[DataProvider('addPeriodSet')]
@@ -307,6 +329,9 @@ final class SequencerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function addPeriodSet(): array
     {
         return [
@@ -336,7 +361,7 @@ final class SequencerTest extends TestCase
     /**
      * @param int $length
      * @param string $input
-     * @param array $expected
+     * @param array <int, bool> $expected
      * @covers \StringSequence\Sequencer::add
      */
     #[DataProvider('addSet')]
@@ -345,11 +370,13 @@ final class SequencerTest extends TestCase
         $obj = new Sequencer($length);
         $obj->add($input);
         $result = $obj->get();
-        $this->assertIsArray($result);
         $this->assertCount($length, $result);
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function addSet(): array
     {
         return [

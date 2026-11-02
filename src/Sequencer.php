@@ -11,8 +11,9 @@ use function sprintf;
 
 class Sequencer
 {
-    private $_sequence;
-    private $_length;
+    /** @var array <int, bool> */
+    private array $_sequence;
+    private int $_length;
 
     /**
      * Sequencer constructor.
@@ -34,11 +35,18 @@ class Sequencer
         return $this;
     }
 
+    /**
+     * @return array <int, bool>
+     */
     public function get(): array
     {
         return $this->_sequence;
     }
 
+    /**
+     * @param string $input
+     * @return array <int, string>
+     */
     private function getTokens(string $input): array
     {
         if ("" === trim($input)) {
@@ -89,15 +97,27 @@ class Sequencer
         return ($input === "*" || strpos($input, "/", 1) !== false);
     }
 
+    /**
+     * @param int $step
+     * @return array <string, int>
+     */
     private function getDefaultPeriod(int $step = 1): array
     {
         return  ["start" => 1, "end" => $this->_length, "step" =>  $step];
     }
 
+    /**
+     * @param string $input
+     * @return array <string, int>
+     * @throws InvalidFormatException
+     */
     private function parsePeriod(string $input): array
     {
         $result = $this->getDefaultPeriod();
         $separator = strpos($input, "-", 1);
+        if (false === $separator) {
+            return $result;
+        }
         $start = trim(substr($input, 0, $separator));
         $end = trim(substr($input, $separator + 1));
         if ($this->isIntNumeric($start)) {
@@ -128,6 +148,10 @@ class Sequencer
         throw new InvalidFormatException(sprintf("Invalid format for repeater string: %s in %s", $repeater, $input));
     }
 
+    /**
+     * @param array<string, int> $period
+     * @throws OutOfBoundsException
+     */
     private function addPeriod(array $period): void
     {
         for ($i = $period["start"]; $i <= $period["end"]; $i += $period["step"]) {
@@ -148,10 +172,8 @@ class Sequencer
         } elseif ($this->isPeriod($input)) {
             $period = $this->parsePeriod($input);
         } else {
-            throw new InvalidFormatException("Invalid format for token: %s", $input);
+            throw new InvalidFormatException(sprintf("Invalid format for token: %s", $input));
         }
-        if (is_array($period)) {
-            $this->addPeriod($period);
-        }
+        $this->addPeriod($period);
     }
 }
